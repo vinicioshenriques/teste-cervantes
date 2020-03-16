@@ -38,11 +38,12 @@ namespace CrudPostgres
             {
                 conn = new NpgsqlConnection(connstring);
                 conn.Open();
-                sql = @"select * from editar_contato(:_numero_antigo,:_numero_novo,:_nome)";
+                sql = @"select * from editar_contato(:_numero_antigo,:_numero_novo,:_nome_antigo,:_nome_novo)";
                 cmd = new NpgsqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("_numero_antigo", this.numeroEditando);
                 cmd.Parameters.AddWithValue("_numero_novo", Int64.Parse(numero.Value.ToString()));
-                cmd.Parameters.AddWithValue("_nome", nome.Text);
+                cmd.Parameters.AddWithValue("_nome_antigo", this.nomeEditando);
+                cmd.Parameters.AddWithValue("_nome_novo", nome.Text);
 
                 int resultado = (int)cmd.ExecuteScalar();
 

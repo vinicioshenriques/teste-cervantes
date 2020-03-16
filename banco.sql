@@ -54,19 +54,26 @@ for each row execute procedure gerar_log();
 
 ---- function editar contato
 
-CREATE OR REPLACE FUNCTION editar_contato(_numero_antigo bigint, _numero_novo bigint, _nome character varying)
+CREATE OR REPLACE FUNCTION editar_contato(_numero_antigo bigint, _numero_novo bigint, _nome_antigo character varying, _nome_novo character varying)
 returns int as
 $$
-begin		
+begin
 	if (select count(*) from contatos where numero = _numero_novo) > 0 then
-		return 1; --- o numero já existe na agenda
+		if (_nome_antigo = _nome_novo) then
+			return 1; --- o numero já existe na agenda
+		else
+			update contatos
+			set numero = _numero_novo, nome = _nome_novo
+			where numero = _numero_antigo;
+			return 0;
+		end if;
 	elsif _numero_novo = 0 then
 		return 2; --- numero igual a 0
-	elsif LENGTH(_nome) = 0 then
+	elsif LENGTH(_nome_novo) = 0 then
 		return 3; --- campo de texto vazio
 	else 
 		update contatos
-		set numero = _numero_novo, nome = _nome
+		set numero = _numero_novo, nome = _nome_novo
 		where numero = _numero_antigo;
 		return 0;
 	end if;
